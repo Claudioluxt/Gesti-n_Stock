@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block titulo %}Registrar Producto{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+
+        <div class="d-flex align-items-center mb-4">
+            <a href="/" class="btn btn-outline-secondary me-3">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <h2 class="fw-bold mb-0">
+                <i class="bi bi-plus-circle me-2 text-primary"></i>Registrar nuevo producto
+            </h2>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-box me-2"></i>Datos del producto
+            </div>
+            <div class="card-body p-4">
+                <form action="/registrar" method="POST">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Nombre <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" name="nombre" class="form-control"
+                               placeholder="Ej: Remera Blanca" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Descripción</label>
+                        <textarea name="descripcion" class="form-control" rows="2"
+                                  placeholder="Breve descripción del producto (opcional)"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Categoría</label>
+                        <input type="text" name="categoria" class="form-control"
+                               placeholder="Ej: Indumentaria">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">
+                                Cantidad <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" name="cantidad" class="form-control"
+                                   min="0" placeholder="0" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">
+                                Precio <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" name="precio" class="form-control"
+                                       min="0" step="0.01" placeholder="0.00" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-save me-2"></i>Guardar producto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

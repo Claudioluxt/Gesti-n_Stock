@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block titulo %}Reporte de Bajo Stock{% endblock %}
+
+{% block contenido %}
+
+<div class="d-flex align-items-center mb-4">
+    <h2 class="fw-bold mb-0">
+        <i class="bi bi-exclamation-triangle me-2 text-warning"></i>Reporte de bajo stock
+    </h2>
+</div>
+
+<!-- Formulario para ingresar el límite -->
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="bi bi-sliders me-2"></i>Definir límite de stock
+    </div>
+    <div class="card-body">
+        <form action="/bajo-stock" method="POST" class="row g-3 align-items-end">
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">
+                    Mostrar productos con cantidad igual o inferior a:
+                </label>
+                <input type="number" name="limite" class="form-control form-control-lg"
+                       min="0" placeholder="Ej: 5"
+                       value="{{ limite if limite is not none else '' }}" required>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-warning btn-lg w-100">
+                    <i class="bi bi-search me-2"></i>Generar reporte
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Resultados del reporte -->
+{% if limite is not none %}
+    {% if productos %}
+        <!-- Tarjetas resumen -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-center border-danger">
+                    <div class="card-body">
+                        <h3 class="fw-bold text-danger">{{ productos|length }}</h3>
+                        <p class="mb-0 text-muted">Productos en riesgo</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center border-warning">
+                    <div class="card-body">
+                        {% set sin_stock = productos|selectattr(3|string, 'equalto', '0')|list|length %}
+                        <h3 class="fw-bold text-warning">
+                            {{ productos|selectattr('3', 'equalto', 0)|list|length }}
+                        </h3>
+                        <p class="mb-0 text-muted">Sin stock (cantidad = 0)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center border-primary">
+                    <div class="card-body">
+                        <h3 class="fw-bold text-primary">{{ limite }}</h3>
+                        <p class="mb-0 text-muted">Límite establecido</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de resultados -->
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <i class="bi bi-table me-2"></i>
+                Productos con stock ≤ {{ limite }} unidades
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th class="text-center">Cantidad</th>
+                                <th class="text-end">Precio</th>
+                                <th class="text-center">Estado</th>
+                                <th class="text-center">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in productos %}
+                            <tr class="{% if p[3] == 0 %}table-danger{% elif p[3] <= 3 %}table-warning{% endif %}">
+                                <td class="text-muted">#{{ p[0] }}</td>
+                                <td class="fw-semibold">{{ p[1] }}</td>
+                                <td>{{ p[5] if p[5] else '—' }}</td>
+                                <td class="text-center fw-bold">{{ p[3] }}</td>
+                                <td class="text-end">${{ "%.2f"|format(p[4]) }}</td>
+                                <td class="text-center">
+                                    {% if p[3] == 0 %}
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-x-circle me-1"></i>Sin stock
+                                        </span>
+                                    {% elif p[3] <= 3 %}
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="bi bi-exclamation-triangle me-1"></i>Crítico
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-orange text-dark" style="background-color:#fd7e14">
+                                            <i class="bi bi-arrow-down me-1"></i>Bajo
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <a href="/actualizar/{{ p[0] }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil me-1"></i>Actualizar
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="card">
+            <div class="card-body text-center py-5 text-success">
+                <i class="bi bi-check-circle display-4 d-block mb-3"></i>
+                <h4 class="fw-bold">¡Stock saludable!</h4>
+                <p class="text-muted">No hay productos con cantidad igual o inferior a <strong>{{ limite }}</strong> unidades.</p>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
+
+{% endblock %}
