@@ -2,7 +2,7 @@
 # Módulo con todas las funciones CRUD y reportes del sistema de inventario.
 
 import sqlite3
-from database import crear_conexion  # Importamos la función que ya construimos (Clase 11)
+from database import crear_conexion  # Importamos la función que ya construimos
 
 
 # ==============================================================================
@@ -17,8 +17,8 @@ def registrar_producto():
     print("\n--- REGISTRAR NUEVO PRODUCTO ---")
 
     # --- Entrada de datos con validación de texto ---
-    # .strip() elimina espacios accidentales al principio y al final (Clase 3)
-    # El bucle while garantiza que el usuario no deje el campo vacío (Clase 5)
+    # .strip() elimina espacios accidentales al principio y al final 
+    # El bucle while garantiza que el usuario no deje el campo vacío 
 
     nombre = ""
     while nombre == "":
@@ -77,7 +77,7 @@ def registrar_producto():
         print(f"\n[OK] Producto '{nombre}' registrado con éxito.")
 
     except sqlite3.Error as e:
-        # Si algo falla, rollback() deshace cualquier cambio parcial (Clase 14)
+        # Si algo falla, rollback() deshace cualquier cambio parcial 
         conexion.rollback()
         print(f"[ERROR] No se pudo registrar el producto: {e}")
 
@@ -105,10 +105,10 @@ def visualizar_productos():
     try:
         cursor = conexion.cursor()
 
-        # ORDER BY nombre ordena los resultados alfabéticamente (Clase 13)
+        # ORDER BY nombre ordena los resultados alfabéticamente
         cursor.execute("SELECT * FROM productos ORDER BY nombre")
 
-        # fetchall() retorna una lista de tuplas con todos los registros (Clase 13)
+        # fetchall() retorna una lista de tuplas con todos los registros 
         productos = cursor.fetchall()
 
         # Si la lista está vacía, avisamos y salimos de la función
@@ -121,7 +121,7 @@ def visualizar_productos():
         print(f"{'ID':<5} {'NOMBRE':<20} {'CATEGORÍA':<15} {'CANTIDAD':<10} {'PRECIO':<10} {'DESCRIPCIÓN'}")
         print("=" * 70)
 
-        # --- Iteramos la lista de tuplas para mostrar cada fila (Clase 6 y 7) ---
+        # --- Iteramos la lista de tuplas para mostrar cada fila ---
         # Cada 'producto' es una tupla: (id, nombre, descripcion, cantidad, precio, categoria)
         for producto in productos:
             id_p        = producto[0]
@@ -131,7 +131,7 @@ def visualizar_productos():
             precio      = producto[4]
             categoria   = producto[5] if producto[5] else "-"
 
-            # f-String con alineación de columnas para formato tabla (Clase 4)
+            # f-String con alineación de columnas para formato tabla
             # :<N significa alinear a la izquierda ocupando N caracteres
             print(f"{id_p:<5} {nombre:<20} {categoria:<15} {cantidad:<10} ${precio:<9.2f} {descripcion}")
 
@@ -190,7 +190,7 @@ def actualizar_producto():
         print(f"  Precio    : ${producto[4]:.2f}")
         print(f"  Categoría : {producto[5]}")
 
-        # --- Menú de campos a actualizar usando match (Clase 3 y 4) ---
+        # --- Menú de campos a actualizar usando match ---
         print("\n¿Qué campo deseas actualizar?")
         print("  1. Nombre")
         print("  2. Descripción")
@@ -250,7 +250,7 @@ def actualizar_producto():
 
         # --- Ejecutamos el UPDATE con el campo elegido ---
         # Usamos f-string SOLO para el nombre del campo (no es input del usuario)
-        # El valor sigue siendo parametrizado con '?' por seguridad (Clase 14)
+        # El valor sigue siendo parametrizado con '?' por seguridad 
         cursor.execute(
             f"UPDATE productos SET {campo} = ? WHERE id = ?",
             (nuevo_valor, id_producto)
@@ -310,9 +310,9 @@ def eliminar_producto():
         print(f"  Cantidad  : {producto[3]}")
         print(f"  Precio    : ${producto[4]:.2f}")
 
-        # --- Confirmación obligatoria antes de eliminar (Clase 14 - Buenas Prácticas) ---
+        # --- Confirmación obligatoria antes de eliminar ---
         # Normalizamos la respuesta con .strip().lower() para aceptar
-        # "S", "s", "SI", "si", "Sí" como respuesta válida (Clase 3)
+        # "S", "s", "SI", "si", "Sí" como respuesta válida 
         print("\n¡ATENCIÓN! Esta acción no se puede deshacer.")
         confirmacion = input("¿Confirmás la eliminación? (s/n): ").strip().lower()
 
@@ -376,10 +376,10 @@ def buscar_producto():
                 # fetchone() porque el ID es único, solo puede haber uno
                 resultado = cursor.fetchone()
                 if resultado:
-                    productos.append(resultado)  # Lo agregamos a la lista (Clase 7)
+                    productos.append(resultado)  # Lo agregamos a la lista 
 
             case "2":
-                # Búsqueda parcial por nombre usando LIKE (Clase 13)
+                # Búsqueda parcial por nombre usando LIKE 
                 # Los % son comodines de SQL: %texto% encuentra cualquier
                 # cadena que CONTENGA ese texto en cualquier posición
                 termino = input("Ingresá el nombre (o parte del nombre): ").strip()
@@ -488,7 +488,7 @@ def reporte_bajo_stock():
         print(f"{'ID':<5} {'NOMBRE':<20} {'CATEGORÍA':<15} {'CANTIDAD':<10} {'PRECIO'}")
         print("-" * 70)
 
-        # --- Acumulador para calcular el total de unidades en riesgo (Clase 5) ---
+        # --- Acumulador para calcular el total de unidades en riesgo ---
         total_unidades = 0
 
         for producto in productos:
