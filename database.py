@@ -1,7 +1,7 @@
 # database.py
 # Módulo encargado de la conexión y la inicialización de la base de datos.
 
-import sqlite3  # Módulo nativo de Python - no necesita instalarse (Clase 13)
+import sqlite3  # Módulo nativo de Python - no necesita instalarse
 
 # Constante con el nombre del archivo de la base de datos.
 # Usamos una variable global en MAYÚSCULAS por convención para indicar que es una constante.
@@ -51,7 +51,7 @@ def inicializar_db():
             )
         """)
 
-        # commit() confirma y guarda los cambios en el archivo .db (Clase 14)
+        # commit() confirma y guarda los cambios en el archivo .db 
         conexion.commit()
         print("[OK] Base de datos inicializada correctamente.")
 
